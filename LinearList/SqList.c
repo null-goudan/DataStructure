@@ -32,8 +32,40 @@ Status InitList_Sq(SqList* L){
     return OK;
 }// InitList_Sq
 
+Status DestroyList_Sq(SqList* L){
+    free(L->elem);
+    free(L);
+    return OK;
+}// DestroyList_Sq
+
+Status ClearList(SqList* L){
+    ElemType* p = L->elem;
+    ElemType* end = L->elem + L->length - 1;
+    if(!p || !end) return ERROR;
+    while(p!=end){
+        *p = 0;
+        ++p;
+    }
+    L->length = 0;
+    return OK;
+}
+
+bool ListEmpty_Sq(SqList* L){
+    return L->length == 0;
+}
+
+int ListLength_Sq(SqList* L){
+    return L->length;
+}
+
+Status GetElem_Sq(SqList* L, int i, ElemType* e){
+    if(i<0||i>L->length-1) return ERROR;
+    *e = L->elem[i];
+    return OK;
+}
+
 Status ListInsert_Sq(SqList *L, int i, ElemType e){
-    if(i < 0 || i > L->length) return ERROR;
+    if(i < 1 || i > L->length+1) return ERROR;
     if(L->length >= L->listsize){
         ElemType* newbase = (ElemType*)realloc(L->elem, (L->listsize + LIST_INIT_SIZE) *sizeof(ElemType));
         if(!newbase) exit(ERROR);
@@ -80,8 +112,13 @@ void ListPrint_Sq(SqList *L){
 int main(){
     SqList L;
     Status r = InitList_Sq(&L);
-    ListInsert_Sq(&L, 0, 1);
-    ListInsert_Sq(&L, 1, 2);
+    printf("is empty: %d, length: %d\n", ListEmpty_Sq(&L), ListLength_Sq(&L));
+    ListInsert_Sq(&L, 1, 1);
+    ListInsert_Sq(&L, 2, 2);
+    printf("is empty: %d, length: %d\n", ListEmpty_Sq(&L), ListLength_Sq(&L));
+    ListDelete_Sq(&L, 1, 1);
+    ListDelete_Sq(&L, 1, 2);
+    printf("is empty: %d, length: %d\n", ListEmpty_Sq(&L), ListLength_Sq(&L));
     ListPrint_Sq(&L);
     return 0;
 }
