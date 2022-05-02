@@ -33,9 +33,21 @@ Status Push(SqStack *S, Elemtype e);
 Status Pop(SqStack *S, Elemtype *e);
 Status StackTraverse(SqStack S, Status (*visit)());
 
+Status printE(Elemtype e){
+    printf("%d\t", e);
+    return OK;
+}
 
 int main(){
-
+    SqStack S;
+    InitStack(&S);
+    if(StackEmpty(S)) printf("Empty\n");
+    for(int i = 0;i<5;i++){
+        Push(&S, i);
+    }
+    StackTraverse(S, printE);
+    printf("\n");
+    return 0;
 }
 
 
@@ -76,6 +88,10 @@ Status Pop(SqStack *S, Elemtype *e){
     *e = *S->top--;
 }
 
-Status StackTraverse(SqStack S, Status (*visit)()){
-    
+Status StackTraverse(SqStack S, Status (*visit)(Elemtype)){
+    while(!StackEmpty(S)){
+        Elemtype e;
+        Pop(&S,&e);
+        visit(e);
+    }
 }
